@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zookeeper-leaderelection-client", "zookeeper-leaderelection-client\zookeeper-leaderelection-client.csproj", "{D4C064EB-04DB-4B1D-9CDA-A246F347ABED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D4C064EB-04DB-4B1D-9CDA-A246F347ABED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4C064EB-04DB-4B1D-9CDA-A246F347ABED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4C064EB-04DB-4B1D-9CDA-A246F347ABED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4C064EB-04DB-4B1D-9CDA-A246F347ABED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6CADC3AD-CF43-44EA-93D3-E9D6B38359E1}
+	EndGlobalSection
+EndGlobal
