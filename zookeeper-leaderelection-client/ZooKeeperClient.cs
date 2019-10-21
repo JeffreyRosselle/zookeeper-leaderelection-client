@@ -52,10 +52,12 @@ namespace zookeeper_leaderelection_client
 
         public async Task Disconnect() =>
             await _zookeeper.closeAsync();
+
         private async Task AddRootNode()
         {
             var rootNode = await _zookeeper.existsAsync(_nodeName);
             if (rootNode == null)
+                //Add application node
                 await _zookeeper.createAsync(_nodeName, Encoding.UTF8.GetBytes(_nodeName), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             _leaderCheckReady = true;
         }
@@ -70,7 +72,9 @@ namespace zookeeper_leaderelection_client
                 {
                     var tenantNode = await _zookeeper.existsAsync(path);
                     if (tenantNode == null)
+                        //Add service tenant node
                         await _zookeeper.createAsync(path, Encoding.UTF8.GetBytes(path), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    //Add specific service node
                     await _zookeeper.createAsync($"{path}/n_", Encoding.UTF8.GetBytes(_uniqueGuid), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
                     _nodeAdded.Add(tenant);
                 }
