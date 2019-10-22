@@ -14,7 +14,7 @@ namespace zookeeper_leaderelection_client
     {
         Task Connect();
         Task Disconnect();
-        Task<bool> IsLeader(string tenant);
+        Task<bool> IsLeader(string service);
     }
 
     public class ZooKeeperClient : Watcher, IZooKeeperClient
@@ -36,11 +36,11 @@ namespace zookeeper_leaderelection_client
             _nodeAdded = new Collection<string>();
         }
 
-        public async Task<bool> IsLeader(string tenant)
+        public async Task<bool> IsLeader(string service)
         {
-            if (_isLeader.Any() && _isLeader.TryGetValue(tenant, out var result))
+            if (_isLeader.Any() && _isLeader.TryGetValue(service, out var result))
                 return result;
-            return await CheckLeader(tenant);
+            return await CheckLeader(service);
 
         }
 
@@ -62,28 +62,29 @@ namespace zookeeper_leaderelection_client
             _leaderCheckReady = true;
         }
 
-        private async Task<bool> CheckLeader(string tenant)
+        private async Task<bool> CheckLeader(string service)
         {
             try
             {
                 if (!_leaderCheckReady) return false;
-                var path = $"{_nodeName}/{tenant}";
-                if (!_nodeAdded.Any(x => x == tenant))
+                var path = $"{_nodeName}/{service}";
+                if (!_nodeAdded.Any(x => x == service))
                 {
                     var tenantNode = await _zookeeper.existsAsync(path);
                     if (tenantNode == null)
-                        //Add service tenant node
+                        //Add service node
                         await _zookeeper.createAsync(path, Encoding.UTF8.GetBytes(path), Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
                     //Add specific service node
                     await _zookeeper.createAsync($"{path}/n_", Encoding.UTF8.GetBytes(_uniqueGuid), Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
-                    _nodeAdded.Add(tenant);
+                    _nodeAdded.Add(service);
                 }
 
                 var childNodes = (await _zookeeper.getChildrenAsync(path)).Children.OrderBy(x => x);
+                //Get data of the leader, and set watch variable to true
                 var leadChild = await _zookeeper.getDataAsync($"{path}/{childNodes.First()}", true);
                 var leaderData = Encoding.UTF8.GetString(leadChild.Data);
-                _isLeader[tenant] = leaderData == _uniqueGuid;
-                return _isLeader[tenant];
+                _isLeader[service] = leaderData == _uniqueGuid;
+                return _isLeader[service];
             }
             catch (Exception)
             {
