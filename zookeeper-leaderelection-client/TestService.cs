@@ -30,7 +30,7 @@ namespace zookeeper_leaderelection_client
                 //Depending on the service, you can be leader for one, but not for an other
                 if (await _client.IsLeader("testservice"))
                 {
-                    _logger.LogInformation("Look at me... I'm am the leader now!");
+                    _logger.LogInformation("Look at me... I am the leader now!");
                     //do stuff as the leader
                     return;
                 }
