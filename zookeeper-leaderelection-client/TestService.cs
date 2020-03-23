@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace zookeeper_leaderelection_client
 {
-    public class TestService : IHostedService
+    public class TestService : BackgroundService
     {
         private readonly IZooKeeperClient _client;
         private readonly ILogger<TestService> _logger;
@@ -17,16 +17,10 @@ namespace zookeeper_leaderelection_client
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            Task.Run(async () => await Run());
-            return Task.CompletedTask;
-        }
-
-        private async Task Run()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             //We'll do a loop where we check if we're the leader
-            while (true)
+            while (!stoppingToken.IsCancellationRequested)
                 //Depending on the service, you can be leader for one, but not for an other
                 if (await _client.IsLeader("testservice"))
                 {
@@ -35,8 +29,5 @@ namespace zookeeper_leaderelection_client
                     return;
                 }
         }
-
-        public Task StopAsync(CancellationToken cancellationToken) =>
-            Task.CompletedTask;
     }
 }
